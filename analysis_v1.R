@@ -46,16 +46,13 @@ expression_data[meanCp_Target < 35,Cp:="Cp < 35"]
 expression_data[meanCp_Target >= 35,Cp:="Cp > 35"]
 expression_data[is.na(meanCp_Target),Cp :="N.D."]
 
-
-
-# convert expression lineal scale
+# convert expression to lineal scale
 
 expression_data[,Rel := 2^log2_Rel]
 expression_data[,Rel_max := 2^(log2_Rel+log2_Rel_error)]
 expression_data[,Rel_min := 2^(log2_Rel-log2_Rel_error)]
 
-
-# Place the samples with no amplification as a fixed log2 value (by default 1e-8)
+# Samples with no amplification wil have a fixed relative expression value (by default 1e-8)
 
 expression_data[Cp =="N.D.", Rel := 1e-8]
 
@@ -66,7 +63,7 @@ expression_data[,Label := paste("Experiment",as.numeric(factor(Experiment)))]
 # Add methylation information 
 
 methylation <- fread("methylation.csv")
-methylation[,Sample:=gsub("( |-)","",Sample)]
+methylation[,Sample:=gsub("( |-)","",Sample)] # to remove spaces and dashes from the Sample names
 expression_data <- merge(expression_data,methylation,by=c("Sample","Target","Treatment"),all.x=T,all.y=T)
 
 # graphic themes
@@ -77,10 +74,6 @@ theme_light2 <-  theme_light() +
   theme(strip.background = element_rect(fill="white",color="grey"),
         strip.text.y = element_text(color="black",size=12),
         strip.text.x = element_text(color="black",size=12))
-
-
-s_shape <- scale_shape_manual(values=c(19,21,4))
-
 
 
 # Plot the methylation per Sample
@@ -103,9 +96,8 @@ common_geoms <- list(
   theme_light2,
   ylab("Expression relative to TPT1 (log scale)"),
   scale_y_log10(),
-  s_shape
+  scale_shape_manual(values=c(19,21,4))
 )
-
 
 # Plot the expression before treatment
 
