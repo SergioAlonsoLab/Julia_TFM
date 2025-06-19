@@ -12,7 +12,7 @@ setwd("~/sandbox/QPCR_Julia/")
 
 # load the expression data
 
-expression_data <- fread("expression.data.csv")
+expression_data <- fread("expression.csv")
 
 # expected columns
 # Experiment:     Label for the experiment
